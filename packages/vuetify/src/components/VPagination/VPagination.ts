@@ -1,6 +1,7 @@
 import './VPagination.sass'
 
 import VIcon from '../VIcon'
+import VBtn from '../VBtn'
 
 // Directives
 import Resize from '../../directives/resize'
@@ -21,6 +22,11 @@ export default mixins(Colorable, Themeable).extend({
 
   props: {
     circle: Boolean,
+    outlined: Boolean,
+    depressed: Boolean,
+    rounded: Boolean,
+    text: Boolean,
+    tile: Boolean,
     disabled: Boolean,
     length: {
       type: Number,
@@ -61,6 +67,10 @@ export default mixins(Colorable, Themeable).extend({
 
     items (): (string | number)[] {
       const totalVisible = parseInt(this.totalVisible, 10)
+
+      if (totalVisible === 0) {
+        return []
+      }
 
       const maxLength = Math.min(
         Math.max(0, totalVisible) || this.length,
@@ -145,32 +155,38 @@ export default mixins(Colorable, Themeable).extend({
     },
     genIcon (h: CreateElement, icon: string, disabled: boolean, fn: EventListener): VNode {
       return h('li', [
-        h('button', {
+        h(VBtn, {
           staticClass: 'v-pagination__navigation',
-          class: {
-            'v-pagination__navigation--disabled': disabled,
+          props: {
+            disabled,
+            outlined: this.outlined,
+            depressed: this.depressed,
+            rounded: this.rounded,
+            text: this.text,
+            tile: this.tile,
           },
-          attrs: {
-            type: 'button',
-          },
-          on: disabled ? {} : { click: fn },
+          on: { click: fn },
         }, [h(VIcon, [icon])]),
       ])
     },
     genItem (h: CreateElement, i: string | number): VNode {
-      const color: string | false = (i === this.value) && (this.color || 'primary')
-      return h('button', this.setBackgroundColor(color, {
+      const isCurrent = (i === this.value)
+      const color: string | false = isCurrent ? (this.color || 'primary') : false
+      return h(VBtn, {
         staticClass: 'v-pagination__item',
-        class: {
-          'v-pagination__item--active': i === this.value,
-        },
-        attrs: {
-          type: 'button',
+        props: {
+          color,
+          disabled: this.disabled,
+          outlined: this.outlined,
+          depressed: this.depressed,
+          rounded: this.rounded,
+          text: this.text,
+          tile: this.tile,
         },
         on: {
           click: () => this.$emit('input', i),
         },
-      }), [i.toString()])
+      }, [i.toString()])
     },
     genItems (h: CreateElement): VNode[] {
       return this.items.map((i, index) => {
@@ -183,9 +199,9 @@ export default mixins(Colorable, Themeable).extend({
 
   render (h): VNode {
     const children = [
-      this.genIcon(h, this.$vuetify.rtl ? this.nextIcon : this.prevIcon, this.value <= 1, this.previous),
+      this.genIcon(h, this.$vuetify.rtl ? this.nextIcon : this.prevIcon, this.value <= 1 || this.disabled, this.previous),
       this.genItems(h),
-      this.genIcon(h, this.$vuetify.rtl ? this.prevIcon : this.nextIcon, this.value >= this.length, this.next),
+      this.genIcon(h, this.$vuetify.rtl ? this.prevIcon : this.nextIcon, this.value >= this.length || this.disabled, this.next),
     ]
 
     return h('ul', {

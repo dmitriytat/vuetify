@@ -3,17 +3,16 @@
 // Theme
 +theme(v-pagination) using ($material)
   .v-pagination__item
-    background: map-get($material, 'cards')
-    color: map-deep-get($material, 'text', 'primary')
+    font-weight: 400
     min-width: 34px
     padding: 0 5px
     width: auto
 
-    &--active
-      color: map-deep-get($material, 'text', 'theme')
-
   .v-pagination__navigation
-    background: map-get($material, 'cards')
+    min-width: 32px
+    width: 32px
+    height: 32px
+    padding: 0 5px
 
 .v-pagination
   align-items: center
@@ -31,49 +30,11 @@
     align-items: center
     display: flex
 
-  &--circle
-    .v-pagination__item,
-    .v-pagination__more,
-    .v-pagination__navigation
-      border-radius: 50%
-
-  &--disabled
-    pointer-events: none
-    opacity: .6
-
   &__item
-    +elevation(2)
-    border-radius: $pagination-border-radius
-    font-size: 14px
-    background: transparent
-    height: 34px
-    width: 34px
     margin: .3rem
-    text-decoration: none
-    transition: .3s map-get($transition, 'linear-out-slow-in')
-
-    &--active
-      +elevation(4)
 
   &__navigation
-    +elevation(2)
-    border-radius: $pagination-border-radius
-    display: inline-flex
-    justify-content: center
-    align-items: center
-    text-decoration: none
-    height: 2rem
-    width: 2rem
     margin: .3rem 10px
-
-    .v-icon
-      font-size: 2rem
-      transition: $secondary-transition
-      vertical-align: middle
-
-    &--disabled
-      opacity: .6
-      pointer-events: none
 
   &__more
     margin: .3rem
